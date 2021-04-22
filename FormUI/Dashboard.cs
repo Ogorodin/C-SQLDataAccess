@@ -15,7 +15,13 @@ namespace FormUI
         public Dashboard()
         {
             InitializeComponent();
+        }      
+
+        private void SearchButton_Click(object sender, EventArgs e)
+        {
+
         }
 
+      
     }
 }
