@@ -5,15 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using MySql.Data.MySqlClient;
 
 namespace FormUI
 {
     public class DataAccess
     {
+
+        
         public List<Person> GetPeople(string lastName)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("sqldataaccessdemodb")))
+            using (MySqlConnection connection = new MySqlConnection(Helper.CnnVal("sqldataaccessdemodb")))
             {
+                connection.Open();
                 var output = connection.Query<Person>($"select * from People where LastName = '{lastName}'").ToList();
                 return output;
             };
