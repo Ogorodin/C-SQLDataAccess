@@ -18,25 +18,12 @@ namespace FormUI
             using (MySqlConnection connection = new MySqlConnection(Helper.CnnVal("sqldataaccessdemodb")))
             {
                 connection.Open();
-                var output = connection.Query<Person>($"select * from People where LastName = '{lastName}'").ToList();
-                //   var output = connection.Query<Person>("dbo.GetPeopleByLastName @LastName", new { LastName = lastName }).ToList();
 
-                //     MySqlCommand cmd = new MySqlCommand("GetPeopleByLastName", connection);
-                //     cmd.CommandType = CommandType.StoredProcedure;
-                //     cmd.Parameters.Add(new MySqlParameter("lastName", new { LastName = lastName }));
-                //     var result = cmd.BeginExecuteNonQuery();
+                var procedure = "GetPeopleByLastName";
+                var values = new { input = lastName };
+                var result = connection.Query<Person>(procedure, values, commandType: CommandType.StoredProcedure).ToList();
 
-                //    Procedure or function '[GetPeopleByLastName]' cannot be found in database 'sqldataaccessdemodb'.
-                //    Verify that user 'root'@'localhost' has enough privileges to execute. // line var results....
-                //      var procedure = "[GetPeopleByLastName]";
-                //     var values = new { LastName = lastName };
-                //      var results = connection.Query<Person>(procedure, values, commandType: CommandType.StoredProcedure).ToList();
-
-                //var sql = "[GetPeopleByLastName] @LastName";
-                //var values = new { LastName = lastName };
-                //var results = connection.Query(sql, values).ToList();
-
-                return output;
+                return result;
             };
         }
 
@@ -44,19 +31,19 @@ namespace FormUI
         {
             using (MySqlConnection connection = new MySqlConnection(Helper.CnnVal("sqldataaccessdemodb")))
             {
-                //                connection.Open();
-                List<Person> people = new List<Person>();
-                people.Add(new Person
+                connection.Open();
+                var procedure = "PeopleInsert";
+                var values = new
                 {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    EmailAddress = email,
-                    PhoneNumber = phone
-                });
+                    firstName = firstName,
+                    lastName = lastName,
+                    emailAddress = email,
+                    phoneNumber = phone
+                };
+                connection.Query<Person>(procedure, values, commandType: CommandType.StoredProcedure);
 
-                connection.Execute(
-                    $"INSERT INTO people(firstName, lastName, emailAddress, phonNumber)" +
-                    $"  VALUES ({firstName}, {lastName}, {email}, {phone})");
+
+
             }
         }
     }
